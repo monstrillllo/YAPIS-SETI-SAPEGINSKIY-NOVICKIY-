@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+<head>
+    {% block title %}
+    <meta charset="UTF-8">
+    <title>Delete film</title>
+    {% endblock %}
+</head>
+{% block content %}
+{{ super() }}
+<form action='' method="post">
+    <input type = "submit" value="Delete">
+    <a href='/films'>Cancel</a>
+</form>
+{% endblock %}
