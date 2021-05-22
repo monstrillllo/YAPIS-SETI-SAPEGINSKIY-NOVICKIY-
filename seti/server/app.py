@@ -58,11 +58,15 @@ def close_db(x):
         g.link_db.close()
 
 
+@app.before_request
+def make_db_connection():
+    global dbase
+    db = get_db()
+    dbase = FDataBase(db)@app.before_request
+
+
 @app.route('/api/v1.0/films', methods=['POST'])
 def add_film():
-    db = get_db()
-    dbase = FDataBase(db)
-
     if not request.json or 'title' not in request.json \
             or 'genre' not in request.json or 'short_review' not in request.json:
         abort(400)
@@ -82,8 +86,6 @@ def add_film():
 
 @app.route('/api/v1.0/films/<int:id_film>', methods=["GET"])
 def get_film(id_film):
-    db = get_db()
-    dbase = FDataBase(db)
     title, genre, short_review = dbase.get_film(id_film)
     if not title:
         abort(404)
@@ -99,8 +101,6 @@ def get_film(id_film):
 
 @app.route('/api/v1.0/films', methods=["GET"])
 def get_film_list():
-    db = get_db()
-    dbase = FDataBase(db)
     # return render_template('film_list.html', menu=dbase.get_menu(), title="Список фильмов",
     #                        film_list=dbase.get_film_list())
     return jsonify({'status': 'success', 'films': dbase.get_film_list()})
@@ -108,9 +108,6 @@ def get_film_list():
 
 @app.route('/api/v1.0/films/<int:id_film>', methods=['DELETE'])
 def delete_film(id_film):
-    db = get_db()
-    dbase = FDataBase(db)
-
     res = dbase.delete_film(id_film)
     print(res)
     return jsonify({'result': res}), 201
@@ -118,9 +115,6 @@ def delete_film(id_film):
 
 @app.route('/api/v1.0/films/<int:id_film>', methods=['PUT'])
 def change_film(id_film):
-    db = get_db()
-    dbase = FDataBase(db)
-
     # if request.method == "POST":
     #     if len(request.form['title']) >= 4 and len(request.form['genre']) >= 4 and \
     #             len(request.form['short_review']) >= 5 and len(request.form['id']) >= 1:
